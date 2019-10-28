@@ -9,7 +9,6 @@ class Customer(models.Model):
 
     """
     Creates table for customer
-    Author: Mary West
     methods: none
     """
 
