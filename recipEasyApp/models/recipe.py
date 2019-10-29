@@ -11,7 +11,7 @@ class Recipe(models.Model):
     instructions = models.models.TextField(null=True, blank=True)
     time_to_cook = models.CharField(max_length=50, null=True, blank=True)
     link_to_page = models.CharField( max_length=None, null=True, blank=True)
-    ingredient_lsit = models.ManyToManyField("Ingredient", through="RecipeIngredient")
+    ingredient_list = models.ManyToManyField("Ingredient", through="RecipeIngredient")
 
 
     class Meta:
