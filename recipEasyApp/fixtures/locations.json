@@ -1,0 +1,93 @@
+[
+    {
+        "model": "recipEasyApp.location",
+        "pk": 1,
+        "fields": {
+          "location":"fruit/vegetables"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 2,
+        "fields": {
+          "location":"Bakery/Deli"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 3,
+        "fields": {
+          "location":"Bread"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 4,
+        "fields": {
+          "location":"mexican/asian/international"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 5,
+        "fields": {
+          "location":"chips/crackers/nuts"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 6,
+        "fields": {
+          "location":"condiments/nut butter/jams/honey"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 7,
+        "fields": {
+          "location":"pasta/bean/Rice"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 8,
+        "fields": {
+          "location":"canned foods"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 9,
+        "fields": {
+          "location":"cereal"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 10,
+        "fields": {
+          "location":"tea/coffee"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 11,
+        "fields": {
+          "location":"baking"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 12,
+        "fields": {
+          "location":"dairy/eggs"
+        }
+      },
+      {
+        "model": "recipEasyApp.location",
+        "pk": 13,
+        "fields": {
+          "location":"spices/seasonings"
+        }
+      }
+]

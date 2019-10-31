@@ -17,12 +17,12 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
     """
     # ingredient_list = IngredientSerializer(many=True)
     class Meta:
-        model = Ingredient
+        model = Recipe
         url = serializers.HyperlinkedIdentityField(
-            view_name='ingredient',
+            view_name='recipe',
             lookup_field='id'
         )
-        fields = ('id', 'url', 'name', 'instructions', 'time_to_cook', 'link_to_page', 'line_items')
+        fields = ('id', 'url', 'name', 'instructions', 'time_to_cook', 'link_to_page', 'ingredient_list')
         depth = 1
 
 
@@ -42,8 +42,8 @@ class Recipes(ViewSet):
         new_recipe.customer = customer
 
         new_recipe.save()
-
-        return Response({}, status=status.HTTP_204_NO_CONTENT)
+        serialize = RecipeSerializer(new_recipe, context={'request': request})
+        return Response(serialize.data)
 
     def retrieve(self, request, pk=None):
         """Handle GET requests for single order

@@ -6,6 +6,6 @@ class RecipeIngredient(models.Model):
 
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    amount = models.CharField()
-    extra_instructions = models.CharField()
+    amount = models.CharField(max_length=100)
+    extra_instructions = models.CharField(max_length=1000)
 

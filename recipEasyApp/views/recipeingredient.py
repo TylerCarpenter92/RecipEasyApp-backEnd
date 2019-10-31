@@ -103,8 +103,8 @@ class RecipeIngredients(ViewSet):
         Returns:
             Response -- JSON serialized list of product types
         """
-        items = OrderProduct.objects.all()
+        recipeingredients = RecipeIngredient.objects.all()
 
-        serializer = OrderProductSerializer(
-            items, many=True, context={'request': request})
+        serializer = RecipeIngredientSerializer(
+            recipeingredients, many=True, context={'request': request})
         return Response(serializer.data)
