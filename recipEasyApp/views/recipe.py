@@ -6,6 +6,7 @@ from rest_framework import serializers
 from rest_framework import status
 from recipEasyApp.models import *
 from .ingredient import IngredientSerializer
+from .recipeingredient import RecipeIngredientSerializer
 
 
 
@@ -15,14 +16,18 @@ class RecipeSerializer(serializers.HyperlinkedModelSerializer):
     Arguments:
         serializers
     """
-    # ingredient_list = IngredientSerializer(many=True)
+    ingredient_list = IngredientSerializer(many=True)
+    recipe_ingredient = RecipeIngredientSerializer(many=True)
+
+
+
     class Meta:
         model = Recipe
         url = serializers.HyperlinkedIdentityField(
             view_name='recipe',
             lookup_field='id'
         )
-        fields = ('id', 'url', 'name', 'instructions', 'time_to_cook', 'link_to_page', 'ingredient_list')
+        fields = ('id', 'url', 'name', 'customer', 'instructions', 'recipe_ingredient', 'time_to_cook', 'link_to_page', 'ingredient_list')
         depth = 1
 
 
@@ -78,7 +83,9 @@ class Recipes(ViewSet):
         recipe.link_to_page = request.data['link_to_page']
         recipe.save()
 
-        return Response({}, status=status.HTTP_204_NO_CONTENT)
+        serializer = RecipeSerializer(recipe, context={'request': request})
+
+        return Response(serializer.data)
 
     def destroy(self, request, pk=None):
         """Handle DELETE requests for a recipe are

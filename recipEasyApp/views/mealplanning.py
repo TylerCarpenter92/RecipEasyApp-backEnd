@@ -5,42 +5,40 @@ from rest_framework import serializers
 from rest_framework import status
 from recipEasyApp.models import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .recipeingredient import RecipeIngredientSerializer
 
 
-class IngredientSerializer(serializers.HyperlinkedModelSerializer):
+class MealPlanningSerializer(serializers.HyperlinkedModelSerializer):
     """JSON serializer for ingredients
 
         Arguments:
         serializers.HyperlinkedModelSerializer
     """
     # This meta defines the field and the model that is being used
-    recipe_ingredient = RecipeIngredientSerializer(many=True)
     class Meta:
-        model = Ingredient
+        model = MealPlanning
         url = serializers.HyperlinkedIdentityField(
-        view_name='ingredient',
+        view_name='mealplanning',
         lookup_field='id'
         )
 
-        fields = ('id', 'name', 'location', 'recipe_ingredient')
+        fields = ('id', 'customer', 'recipe', 'date')
         depth = 2
 
 
-class Ingredients(ViewSet):
+class MealPlannings(ViewSet):
     """Handle POST operations
         Returns:
             Response -- JSON serialized ingredient instance
         """
     permission_classes = (IsAuthenticatedOrReadOnly,)
     def create(self, request):
-        new_ingredient = Ingredient()
-        new_ingredient.customer = Customer.objects.get(user=request.auth.user)
-        new_ingredient.location = Location.objects.get(pk=request.data['location_id'])
-        new_ingredient.name = request.data["name"]
+        new_mealplanning = MealPlanning()
+        new_mealplanning.customer = Customer.objects.get(user=request.auth.user)
+        new_mealplanning.recipe = Recipe.objects.get(pk=request.data['recipe_id'])
+        new_mealplanning.date = request.data['date']
 
-        new_ingredient.save()
-        serializer = IngredientSerializer(new_ingredient, context={'request': request})
+        new_mealplanning.save()
+        serializer = MealPlanningSerializer(new_mealplanning, context={'request': request})
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
@@ -49,8 +47,8 @@ class Ingredients(ViewSet):
             Response -- JSON serialized park area instance
         """
         try:
-            ingredient = Ingredient.objects.get(pk=pk)
-            serializer = IngredientSerializer(ingredient, context={'request': request})
+            mealplanning = MealPlanning.objects.get(pk=pk)
+            serializer = MealPlanningSerializer(mealplanning, context={'request': request})
             return Response(serializer.data)
         except Exception as ex:
             return HttpResponseServerError(ex)
@@ -60,12 +58,11 @@ class Ingredients(ViewSet):
         Returns:
             Response -- Empty body with 204 status code
         """
-        ingredient = Ingredient.objects.get(pk=pk)
-        product.name = request.data['name']
-        ingredient.location = Location.objects.get(pk=request.data['location_id'])
+        mealplanning = MealPlanning.objects.get(pk=pk)
+        mealplanning.date = request.data['date']
 
 
-        ingredient.save()
+        mealplanning.save()
 
         return Response({}, status=status.HTTP_204_NO_CONTENT)
 
@@ -75,12 +72,12 @@ class Ingredients(ViewSet):
             Response -- 200, 404, or 500 status code
         """
         try:
-            ingredient = Ingredient.objects.get(pk=pk)
-            ingredient.delete()
+            mealplanning = MealPlanning.objects.get(pk=pk)
+            mealplanning.delete()
 
             return Response({}, status=status.HTTP_204_NO_CONTENT)
 
-        except Ingredient.DoesNotExist as ex:
+        except MealPlanning.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
 
         except Exception as ex:
@@ -91,8 +88,8 @@ class Ingredients(ViewSet):
         Returns:
             Response -- JSON serialized list of ingredients
         """
-        ingredients = Ingredient.objects.all()  # This is my query to the database
+        mealplanning = MealPlanning.objects.all()  # This is my query to the database
 
-        serializer = IngredientSerializer(
-            ingredients, many=True, context={'request': request})
+        serializer = MealPlanningSerializer(
+            mealplanning, many=True, context={'request': request})
         return Response(serializer.data)

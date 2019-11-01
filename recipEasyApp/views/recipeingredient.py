@@ -3,7 +3,9 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
-from recipEasyApp.models import RecipeIngredient, Recipe, Ingredient
+from recipEasyApp.models import RecipeIngredient, Recipe, Ingredient, Location
+# from .recipe import RecipeSerializer
+# from .ingredient import IngredientSerializer
 
 # Author: Amber Gooch
 # Purpose: Allow a user to communicate with the Bangazon database to GET POST and DELETE order/product entries.
@@ -16,14 +18,18 @@ class RecipeIngredientSerializer(serializers.HyperlinkedModelSerializer):
     Arguments:
         serializers
     """
+    # recipe = RecipeSerializer(many=False)
+    # ingredient = IngredientSerializer(many=False)
     class Meta:
         model = RecipeIngredient
         url = serializers.HyperlinkedIdentityField(
             view_name='recipeingredient',
             lookup_field='id'
         )
-        fields = ('id', 'recipe', 'ingredient', 'amount', 'extra_instructions')
+        fields = ('id', 'recipe', 'ingredient', 'ingredient_id', 'amount', 'extra_instructions')
         depth = 2
+
+
 
 
 class RecipeIngredients(ViewSet):
@@ -34,19 +40,21 @@ class RecipeIngredients(ViewSet):
         Returns:
             Response -- JSON serialized RecipeIngredient instance
         """
-        ingredient = Ingredient.objects.get(name=request.data['name'])
-        if not ingredient:
-            ingredient = Ingredient()
-            ingredient.name = request.data['name']
-            ingredient.location = request.data['location']
-            ingredient.save()
-
         new_recipeingredient = RecipeIngredient()
-
         new_recipeingredient.recipe = Recipe.objects.get(pk=request.data["recipe_id"])
-        new_recipeingredient.ingredient = ingredient
         new_recipeingredient.amount = request.data['amount']
         new_recipeingredient.extra_instructions = request.data['extra_instructions']
+        ingredient = Ingredient.objects.filter(name=request.data['name'])
+
+        if ingredient.exists():
+            new_recipeingredient.ingredient = ingredient[0]
+
+        else:
+            ingredient = Ingredient()
+            ingredient.name = request.data['name']
+            ingredient.location = Location.objects.get(pk=request.data['location'])
+            ingredient.save()
+            new_recipeingredient.ingredient = ingredient
 
         new_recipeingredient.save()
 

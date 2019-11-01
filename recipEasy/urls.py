@@ -6,10 +6,13 @@ from recipEasyApp.views import *
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'users', Users, 'user')
+router.register(r'customers', Customers, 'customer')
 router.register(r'recipes', Recipes, 'recipe')
 router.register(r'locations', Locations, 'location')
 router.register(r'ingredients', Ingredients, 'ingredient')
 router.register(r'recipeingredients', RecipeIngredients, 'recipeingredient')
+router.register(r'mealplannings', MealPlannings, 'mealplanning')
+
 
 urlpatterns = [
     url(r'^', include(router.urls)),

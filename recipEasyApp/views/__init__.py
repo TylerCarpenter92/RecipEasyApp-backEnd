@@ -5,4 +5,5 @@ from .recipe import Recipes
 from .ingredient import Ingredients
 from .location import Locations
 from .recipeingredient import RecipeIngredients
+from .mealplanning import MealPlannings
 
