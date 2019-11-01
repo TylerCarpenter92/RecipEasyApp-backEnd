@@ -23,16 +23,11 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class Users(ViewSet):
-    """Users for Bangazon
-    Author: Curt Cato
-    Purpose: Allow a user to communicate with the Bangazon database to GET PUT POST and DELETE Users.
-    Methods: GET PUT(id) POST
-"""
+
 
 
     def retrieve(self, request, pk=None):
         """Handle GET requests for single customer
-        Author: Curt Cato
         Purpose: Allow a user to communicate with the Bangazon database to retrieve  one user
         Methods:  GET
         Returns:
@@ -49,12 +44,8 @@ class Users(ViewSet):
 
     def list(self, request):
         """Handle GET requests to customers resource
-        Author: Curt Cato
         Purpose: Allow a user to communicate with the Bangazon database to retrieve  list of users
         Methods:  GET
-
-        Returns:
-            Response -- JSON serialized list of park areas
         """
         users = Users.objects.all()
         serializer = UserSerializer(
