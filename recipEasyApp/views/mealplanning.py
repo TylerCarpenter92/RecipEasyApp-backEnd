@@ -5,6 +5,9 @@ from rest_framework import serializers
 from rest_framework import status
 from recipEasyApp.models import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from datetime import datetime
+from datetime import date
+from .recipe import RecipeSerializer
 
 
 class MealPlanningSerializer(serializers.HyperlinkedModelSerializer):
@@ -13,6 +16,7 @@ class MealPlanningSerializer(serializers.HyperlinkedModelSerializer):
         Arguments:
         serializers.HyperlinkedModelSerializer
     """
+    recipe = RecipeSerializer(many=False)
     # This meta defines the field and the model that is being used
     class Meta:
         model = MealPlanning
@@ -21,8 +25,8 @@ class MealPlanningSerializer(serializers.HyperlinkedModelSerializer):
         lookup_field='id'
         )
 
-        fields = ('id', 'customer', 'recipe', 'date')
-        depth = 2
+        fields = ('id', 'customer', 'recipe', 'date', 'week_number', 'weekday', 'weekday_number')
+        depth = 3
 
 
 class MealPlannings(ViewSet):
@@ -35,11 +39,13 @@ class MealPlannings(ViewSet):
         new_mealplanning = MealPlanning()
         new_mealplanning.customer = Customer.objects.get(user=request.auth.user)
         new_mealplanning.recipe = Recipe.objects.get(pk=request.data['recipe_id'])
-        new_mealplanning.date = request.data['date']
+        date = datetime(request.data['year'], request.data['month'], request.data['day'])
+        new_mealplanning.week_number = request.data['week']
+        new_mealplanning.date = date
 
         new_mealplanning.save()
-        serializer = MealPlanningSerializer(new_mealplanning, context={'request': request})
-        return Response(serializer.data)
+
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
 
     def retrieve(self, request, pk=None):
         """Handle GET requests for single ingredient
@@ -88,7 +94,14 @@ class MealPlannings(ViewSet):
         Returns:
             Response -- JSON serialized list of ingredients
         """
+        customer = Customer.objects.get(user=request.auth.user)
         mealplanning = MealPlanning.objects.all()  # This is my query to the database
+        mealplanning = mealplanning.filter(customer=customer)
+
+        week_number = self.request.query_params.get('week_number', None)
+        if week_number is not None:
+            week_number = int(week_number)
+            mealplanning = mealplanning.filter(week_number=week_number)
 
         serializer = MealPlanningSerializer(
             mealplanning, many=True, context={'request': request})
